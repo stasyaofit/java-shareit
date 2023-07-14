@@ -2,10 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.exception.OperationAccessException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -31,16 +30,15 @@ public class ItemServiceImpl implements ItemService {
 
     public ItemDto saveItem(ItemDto itemDto, Long userId) {
         return ItemMapper.toItemDto(itemStorage.saveItem(ItemMapper.toItem(itemDto), userStorage.getUser(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Пользователь с id = " + userId + " не найден."))));
+                () -> new UserNotFoundException("Пользователь с id = " + userId + " не найден."))));
     }
 
     public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
         checkIdAndItemExists(itemId);
         Item updateItem = itemStorage.getItemById(itemId);
+        log.info("Обновляемая вещь {}", updateItem);
         if (!Objects.equals(updateItem.getOwner().getId(), userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Пользователь с id = " + " не является собственником вещи.");
+            throw new OperationAccessException("Пользователь с id = " + userId + " не является собственником вещи.");
         }
 
         updateItem.setName(itemDto.getName() != null ? itemDto.getName() : updateItem.getName());

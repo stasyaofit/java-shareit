@@ -25,19 +25,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        /* можно ли сюда вынести проверку почты следующим образом
+        isMailUsed(userStorage.getNexId(), userDto.getEmail()
+
+         */
         return UserMapper.toUserDto(userStorage.createUser(UserMapper.toUser(userDto)));
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, Long userId) {
-        User user = userStorage.getUser(userId).orElseThrow(
+        User updateUser = userStorage.getUser(userId).orElseThrow(
                 () -> new UserNotFoundException("Пользователь с id = " + userId + " не найден."));
-        user.setName(userDto.getName() != null ? userDto.getName() : user.getName());
-        user.setEmail(userDto.getEmail() != null && isMailUsed(userId, userDto.getEmail()) ? userDto.getEmail() : user.getEmail());
-        validateUser(user);
+        log.info("Обновляемый пользователь {}", updateUser);
+        updateUser.setName(userDto.getName() != null ? userDto.getName() : updateUser.getName());
+        updateUser.setEmail(userDto.getEmail() != null && isMailUsed(userId, userDto.getEmail()) ? userDto.getEmail() : updateUser.getEmail());
+        validateUser(updateUser);
 
-        log.info("Пользователь {} обновлен.", user);
-        return UserMapper.toUserDto(userStorage.updateUser(user));
+        log.info("Пользователь {} обновлен.", updateUser);
+        return UserMapper.toUserDto(userStorage.updateUser(updateUser));
     }
 
     @Override
