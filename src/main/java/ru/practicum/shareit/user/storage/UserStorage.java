@@ -10,10 +10,13 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    boolean deleteUser(Long userId);
+    void deleteUser(Long userId);
 
     List<User> findAll();
 
     Optional<User> getUser(Long userId);
 
+    boolean isMailUsed(String email);
+
+    void updateUserEmails(String oldEmail, String newEmail);
 }

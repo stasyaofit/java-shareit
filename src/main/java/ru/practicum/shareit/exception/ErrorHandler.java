@@ -11,45 +11,51 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler
-    public ResponseEntity handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler()
-    public ResponseEntity handleAlreadyExistsMailException(final AlreadyExistsMailException e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler()
-    public ResponseEntity handleOperationAccessException(final OperationAccessException e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity handleIncorrectParameterException(final IncorrectParameterException e) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(
-                "Ошибка с полем " + e.getParameter(), HttpStatus.BAD_REQUEST);
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity<ErrorResponse> handleAlreadyExistsMailException(final AlreadyExistsMailException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleUserNotFound(final UserNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleOperationAccessException(final OperationAccessException e) {
         log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.FORBIDDEN.value(), e.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleItemNotFound(final ItemNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleIncorrectParameterException(final IncorrectParameterException e) {
         log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Ошибка с полем " + e.getParameter()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity handleThrowable(final Throwable e) {
+    public ResponseEntity<ErrorResponse> handleUserNotFound(final UserNotFoundException e) {
         log.error(e.getMessage(), e);
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleItemNotFound(final ItemNotFoundException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleThrowable(final Throwable e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

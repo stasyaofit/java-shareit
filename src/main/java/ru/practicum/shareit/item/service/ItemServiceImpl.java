@@ -12,14 +12,9 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +35,9 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(updateItem.getOwner().getId(), userId)) {
             throw new OperationAccessException("Пользователь с id = " + userId + " не является собственником вещи.");
         }
-
         updateItem.setName(itemDto.getName() != null ? itemDto.getName() : updateItem.getName());
         updateItem.setDescription(itemDto.getDescription() != null ? itemDto.getDescription() : updateItem.getDescription());
         updateItem.setAvailable(itemDto.getAvailable() != null ? itemDto.getAvailable() : updateItem.getAvailable());
-        validateItem(updateItem);
         log.info("Вещь {} обновлена.", updateItem);
         return ItemMapper.toItemDto(itemStorage.updateItem(updateItem));
     }
@@ -86,14 +79,6 @@ public class ItemServiceImpl implements ItemService {
     private void checkIdAndUserExists(Long userId) {
         if (userId < 0 || userStorage.getUser(userId).isEmpty()) {
             throw new UserNotFoundException("Пользователь c id = " + userId + " не найден.");
-        }
-    }
-
-    private void validateItem(Item item) {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Set<ConstraintViolation<Item>> violations = validator.validate(item);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
         }
     }
 }

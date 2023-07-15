@@ -4,22 +4,29 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.AlreadyExistsMailException;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Data
 @Slf4j
 @Repository
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
+    private final Set<String> userEmails = new HashSet<>();
     private Long nextId = 1L;
 
     @Override
     public User createUser(User user) {
-        user.setId(nextId);
-        isMailUsed(user.getId(), user.getEmail());
-        nextId++;
+        user.setId(nextId++);
+        userEmails.add(user.getEmail());
         users.put(user.getId(), user);
         log.info("Пользователь с id = {} успешно создан.", user.getId());
         return user;
@@ -32,8 +39,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean deleteUser(Long userId) {
-        return users.remove(userId) != null;
+    public void deleteUser(Long userId) {
+        User user = getUser(userId).orElseThrow(
+                () -> new UserNotFoundException("Пользователь с id = " + userId + " не найден."));
+        userEmails.remove(user.getEmail());
+        users.remove(userId);
     }
 
     @Override
@@ -46,13 +56,17 @@ public class InMemoryUserStorage implements UserStorage {
         return Optional.ofNullable(users.get(userId));
     }
 
-    private void isMailUsed(Long id, String email) {
-        boolean isMailUsed = users.values().stream()
-                .filter(user -> !user.getId().equals(id))
-                .anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
+    @Override
+    public void updateUserEmails(String oldEmail, String newEmail) {
+        userEmails.remove(oldEmail);
+        userEmails.add(newEmail);
+    }
 
-        if (isMailUsed) {
+    @Override
+    public boolean isMailUsed(String email) {
+        if (userEmails.contains(email)) {
             throw new AlreadyExistsMailException("Такая почта уже существует");
         }
+        return true;
     }
 }
