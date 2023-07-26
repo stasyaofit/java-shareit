@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequest {
-    Long requestId;
+    Long id;
     @NotEmpty(message = "Описание не может быть пустым")
     String description;
     User requestor;
