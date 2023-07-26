@@ -46,4 +46,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Optional<Booking> findFirst1ByBookerIdAndItem_IdAndEndIsBeforeAndStatus(Long authorId, Long itemId,
                                                                             LocalDateTime now, Status status);
+
 }
