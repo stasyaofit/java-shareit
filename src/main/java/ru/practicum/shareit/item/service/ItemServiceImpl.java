@@ -98,8 +98,8 @@ public class ItemServiceImpl implements ItemService {
             itemsDto.add(dto);
         }
         log.info("Список вещей пользователя c id = {}: {}", ownerId, itemsDto);
-        return itemsDto.stream().
-                sorted(Comparator.comparing(ItemBookingCommentDto::getId))
+        return itemsDto.stream()
+                .sorted(Comparator.comparing(ItemBookingCommentDto::getId))
                 .collect(Collectors.toList());
     }
 
