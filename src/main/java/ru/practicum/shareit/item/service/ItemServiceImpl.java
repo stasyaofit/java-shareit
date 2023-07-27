@@ -90,17 +90,17 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemBookingCommentDto> getOwnerItems(Long ownerId) {
         checkUserExistAndGet(ownerId);
         List<Item> items = itemRepository.findItemByOwner_IdIs(ownerId);
-        List<ItemBookingCommentDto> itemsDto = new ArrayList<>();
-        for (Item item : items) {
-            ItemBookingCommentDto dto = itemMapper.toItemWithBookings(item, getItemLastBooking(item.getId()),
-                    getItemNextBooking(item.getId()));
-            dto.setComments(getItemComments(item.getId()));
-            itemsDto.add(dto);
-        }
-        log.info("Список вещей пользователя c id = {}: {}", ownerId, itemsDto);
-        return itemsDto.stream()
+        List<ItemBookingCommentDto> itemsDto = items.stream()
+                .map(item -> {
+                    ItemBookingCommentDto dto = itemMapper.toItemWithBookings(item, getItemLastBooking(item.getId()),
+                            getItemNextBooking(item.getId()));
+                    dto.setComments(getItemComments(item.getId()));
+                    return dto;
+                })
                 .sorted(Comparator.comparing(ItemBookingCommentDto::getId))
                 .collect(Collectors.toList());
+        log.info("Список вещей пользователя c id = {}: {}", ownerId, itemsDto);
+        return itemsDto;
     }
 
     @Override

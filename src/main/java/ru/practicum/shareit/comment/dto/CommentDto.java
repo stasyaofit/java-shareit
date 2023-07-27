@@ -11,5 +11,5 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class CommentDto {
     @NotBlank(message = "Отзыв не может быть пустым")
-    String text;
+    private String text;
 }
