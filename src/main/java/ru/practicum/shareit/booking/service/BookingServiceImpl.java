@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -24,21 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingDtoMapper dtoMapper;
-
-    @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, UserRepository userRepository,
-                              ItemRepository itemRepository, BookingDtoMapper dtoMapper) {
-        this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
-        this.dtoMapper = dtoMapper;
-    }
 
     @Override
     public BookingResponseDto addBooking(BookingRequestDto bookingDto, Long bookerId) {
@@ -147,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
         return Collections.emptyList();
     }
 
-    public Item checkItemExistAndGetAvailable(Long itemId) {
+    private Item checkItemExistAndGetAvailable(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new ItemNotFoundException("Вещь с id = " + itemId + " не найдена."));
         if (!item.getAvailable()) {
