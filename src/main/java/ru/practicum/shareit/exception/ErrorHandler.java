@@ -17,6 +17,13 @@ public class ErrorHandler {
                 new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler()
     public ResponseEntity<ErrorResponse> handleAlreadyExistsMailException(final AlreadyExistsMailException e) {
         log.error(e.getMessage(), e);
@@ -46,7 +53,21 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleUnsupportedStatusException(final UnsupportedStatusException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleItemNotFound(final ItemNotFoundException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNotFound(final NotFoundException e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(
                 new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);

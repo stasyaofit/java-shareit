@@ -13,11 +13,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.CommentResponseDto;
+import ru.practicum.shareit.item.dto.ItemBookingCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static ru.practicum.shareit.util.Constants.REQUEST_HEADER;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,18 +31,17 @@ import java.util.List;
 @Validated
 public class ItemController {
     private final ItemService itemService;
-    private static final String REQUEST_HEADER = "X-Sharer-User-Id";
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@RequestHeader(REQUEST_HEADER) @PathVariable Long id) {
+    public ItemBookingCommentDto getItemById(@RequestHeader(REQUEST_HEADER) Long userId, @PathVariable Long id) {
         log.info("Получен GET-запрос к эндпоинту: /items/{id} на получение вещи с id = {} .", id);
-        return itemService.getItemById(id);
+        return itemService.getItemById(userId, id);
     }
 
     @GetMapping
-    public List<ItemDto> getUserItems(@RequestHeader(REQUEST_HEADER) Long userId) {
-        log.info("Получен GET-запрос к эндпоинту: /items на получение вещей пользователя с id = {} .", userId);
-        return itemService.getUserItems(userId);
+    public List<ItemBookingCommentDto> getOwnerItems(@RequestHeader(REQUEST_HEADER) Long ownerId) {
+        log.info("Получен GET-запрос к эндпоинту: /items на получение вещей пользователя с id = {} .", ownerId);
+        return itemService.getOwnerItems(ownerId);
     }
 
     @GetMapping("/search")
@@ -50,6 +54,14 @@ public class ItemController {
     public ItemDto createItem(@RequestHeader(REQUEST_HEADER) Long userId, @RequestBody @Valid ItemDto itemDto) {
         log.info("Получен POST-запрос к эндпоинту: /items на создание вещи пользователем с id = {} .", userId);
         return itemService.saveItem(itemDto, userId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponseDto addComment(@RequestHeader(REQUEST_HEADER) Long userId,
+                                         @PathVariable Long itemId, @RequestBody @Valid CommentDto commentDto) {
+        log.info("Получен POST-запрос к эндпоинту: /items/{itemId}/comment на добавление отзыва " +
+                "для вещи с id = {} пользователем с id = {} .", itemId, userId);
+        return itemService.addComment(commentDto, itemId, userId);
     }
 
     @PatchMapping("/{itemId}")
