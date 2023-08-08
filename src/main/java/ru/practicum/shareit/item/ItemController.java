@@ -20,6 +20,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import static ru.practicum.shareit.util.Constants.REQUEST_HEADER;
@@ -39,20 +41,27 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemBookingCommentDto> getOwnerItems(@RequestHeader(REQUEST_HEADER) Long ownerId) {
+    public List<ItemBookingCommentDto> getOwnerItems(@RequestHeader(REQUEST_HEADER) Long ownerId,
+                                                     @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                                     @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         log.info("Получен GET-запрос к эндпоинту: /items на получение вещей пользователя с id = {} .", ownerId);
-        return itemService.getOwnerItems(ownerId);
+        return itemService.getOwnerItems(ownerId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> findAvailableItemsByText(@RequestParam String text) {
+    public List<ItemDto> findAvailableItemsByText(@RequestParam String text,
+                                                  @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                                  @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         log.info("Получен GET-запрос к эндпоинту: /items/search?text={} на поиск доступных вещей по строке.", text);
-        return itemService.findAvailableItemsByText(text);
+        return itemService.findAvailableItemsByText(text, from, size);
     }
 
     @PostMapping
     public ItemDto createItem(@RequestHeader(REQUEST_HEADER) Long userId, @RequestBody @Valid ItemDto itemDto) {
         log.info("Получен POST-запрос к эндпоинту: /items на создание вещи пользователем с id = {} .", userId);
+        if (itemDto.getRequestId() != null) {
+            return itemService.saveItem(itemDto, userId, itemDto.getRequestId());
+        }
         return itemService.saveItem(itemDto, userId);
     }
 

@@ -10,7 +10,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -56,7 +56,8 @@ public class Item {
     @JoinColumn(name = "owner_id")
     User owner;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "request_id")
     ItemRequest request;
 
     @Transient

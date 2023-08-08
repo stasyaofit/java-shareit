@@ -16,9 +16,11 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingRequestDto {
     Long itemId;
+
     @FutureOrPresent(message = "Начало бронирования не может быть в прошлом")
     @NotNull
     LocalDateTime start;
+
     @FutureOrPresent(message = "Окончание бронирования не может быть в прошлом")
     @NotNull
     LocalDateTime end;
