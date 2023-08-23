@@ -51,7 +51,9 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userDto.getId()));
+                .andExpect(jsonPath("$.id").value(userDto.getId()))
+                .andExpect(jsonPath("$.name").value(userDto.getName()))
+                .andExpect(jsonPath("$.email").value(userDto.getEmail()));
 
         verify(userService, times(1)).createUser(any(UserDto.class));
         verifyNoMoreInteractions(userService);
@@ -65,7 +67,9 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/" + userDto.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userDto.getId()));
+                .andExpect(jsonPath("$.id").value(userDto.getId()))
+                .andExpect(jsonPath("$.name").value(userDto.getName()))
+                .andExpect(jsonPath("$.email").value(userDto.getEmail()));
 
         verify(userService, times(1)).getUser(userDto.getId());
         verifyNoMoreInteractions(userService);
@@ -83,7 +87,11 @@ public class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(userDto1.getId()))
-                .andExpect(jsonPath("$[1].id").value(userDto2.getId()));
+                .andExpect(jsonPath("$[0].name").value(userDto1.getName()))
+                .andExpect(jsonPath("$[0].email").value(userDto1.getEmail()))
+                .andExpect(jsonPath("$[1].id").value(userDto2.getId()))
+                .andExpect(jsonPath("$[1].name").value(userDto2.getName()))
+                .andExpect(jsonPath("$[1].email").value(userDto2.getEmail()));
 
         verify(userService, times(1)).findAll();
         verifyNoMoreInteractions(userService);
@@ -101,7 +109,9 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userDto.getId()));
+                .andExpect(jsonPath("$.id").value(userDto.getId()))
+                .andExpect(jsonPath("$.name").value(userDto.getName()))
+                .andExpect(jsonPath("$.email").value(userDto.getEmail()));
 
         verify(userService, times(1)).updateUser(any(UserDto.class), eq(userDto.getId()));
         verifyNoMoreInteractions(userService);

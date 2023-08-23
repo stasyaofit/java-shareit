@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,14 +22,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @EqualsAndHashCode(exclude = {"id"})
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -39,12 +40,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
     Long id;
-
-    @FutureOrPresent(message = "Начало бронирования не может быть в прошлом")
+    @NotNull
     @Column(name = "start_date", nullable = false)
     LocalDateTime start;
-
-    @Future(message = "Окончание бронирования не может быть в прошлом")
+    @NotNull
     @Column(name = "end_date", nullable = false)
     LocalDateTime end;
 

@@ -62,14 +62,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getBookingById(Long userId, Long bookingId) {
-        User user = checkUserExistAndGet(userId);
+        checkUserExistAndGet(userId);
         Booking booking = checkBookingExistAndGet(bookingId);
         Long ownerId = booking.getItem().getOwner().getId();
         Long bookerId = booking.getBooker().getId();
         if (userId.equals(ownerId) || userId.equals(bookerId)) {
             return dtoMapper.mapToBookingResponseDto(booking);
         } else {
-            throw new NotFoundException("Бронь с id = " + bookingId + " для пользователя: " + user + " не найдена");
+            throw new NotFoundException("Бронь с id = " + bookingId + " для пользователя с id = " + userId + " не найдена");
         }
     }
 
@@ -161,6 +161,6 @@ public class BookingServiceImpl implements BookingService {
 
     private Booking checkBookingExistAndGet(Long bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(
-                () -> new UserNotFoundException("Бронь с id = " + bookingId + " не найден."));
+                () -> new UserNotFoundException("Бронь с id = " + bookingId + " не найдена."));
     }
 }

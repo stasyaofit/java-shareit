@@ -1,7 +1,10 @@
 package ru.practicum.shareit.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -11,6 +14,9 @@ import java.util.List;
 import static ru.practicum.shareit.util.Constants.DATE_TIME_FORMAT;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ItemRequestResponseDto {
     Long id;
     String description;

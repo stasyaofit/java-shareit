@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @EqualsAndHashCode(exclude = {"id"})
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)

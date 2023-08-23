@@ -18,7 +18,8 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JsonTest
-public class UserDtoTest {
+public class
+UserDtoTest {
     @Autowired
     private JacksonTester<UserDto> jacksonTester;
     private final UserDto dto = UserDto.builder().id(1L).name("User").email("valid@test.ru").build();
