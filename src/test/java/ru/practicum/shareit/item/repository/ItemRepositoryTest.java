@@ -64,6 +64,7 @@ class ItemRepositoryTest {
         assertEquals(actual, item);
         assertThat(actualItems.size(), is(1));
     }
+
     @Test
     void findItemByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue() {
         Pageable page = PageRequest.of(0, 10);

@@ -146,8 +146,8 @@ class ItemRequestControllerTest {
     @Test
     void addNewItemRequest_whenNotFound_thenStatusNotFound() throws Exception {
         //given
-        when(itemRequestService.addItemRequest(anyLong(), any())).
-                thenThrow(new UserNotFoundException("not found message"));
+        when(itemRequestService.addItemRequest(anyLong(), any()))
+                .thenThrow(new UserNotFoundException("not found message"));
         //when
         mvc.perform(post(PATH)
                         .header(REQUEST_HEADER, 2L)
