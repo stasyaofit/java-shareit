@@ -1,5 +1,8 @@
 package ru.practicum.shareit.util;
 
+import lombok.Generated;
+
+@Generated
 public class Constants {
     public static final String REQUEST_HEADER = "X-Sharer-User-Id";
 

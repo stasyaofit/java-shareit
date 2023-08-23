@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +67,11 @@ class ItemRequestControllerTest {
                 .description("itemRequest")
                 .created(created)
                 .build();
+    }
+
+    @Test
+    void contextLoad() {
+        assertThat(itemRequestService).isNotNull();
     }
 
     @Test

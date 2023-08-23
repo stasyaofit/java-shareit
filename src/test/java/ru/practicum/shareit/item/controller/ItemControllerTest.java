@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,6 +79,11 @@ class ItemControllerTest {
     }
 
     @Test
+    void contextLoad() {
+        assertThat(itemService).isNotNull();
+    }
+
+    @Test
     void httpRequest_whenXSharerUserHeaderNotProvided_then_InternalServerError() throws Exception {
         //then
         mvc.perform(post(PATH)).andExpect(status().isInternalServerError());
@@ -128,6 +134,35 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.name", is(response.getName()), String.class))
                 .andExpect(jsonPath("$.description", is(response.getDescription())))
                 .andExpect(jsonPath("$.available", is(true), Boolean.class));
+    }
+
+    @Test
+    void postItem_whenDtoWithRequestNotNullAndUser_thenStatusOk() throws Exception {
+        //given
+        long requestId = 1L;
+        itemDto.setRequestId(requestId);
+        ItemDto response = ItemDto.builder()
+                .id(1L)
+                .name(itemName)
+                .description(itemDescription)
+                .available(true)
+                .requestId(requestId)
+                .build();
+        when(itemService.saveItem(itemDto, userId, requestId)).thenReturn(response);
+        //when
+        mvc.perform(post(PATH)
+                        .header(REQUEST_HEADER, 1L)
+                        .content(objectMapper.writeValueAsString(itemDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
+                .andExpect(jsonPath("$.name", is(response.getName()), String.class))
+                .andExpect(jsonPath("$.description", is(response.getDescription())))
+                .andExpect(jsonPath("$.available", is(true), Boolean.class))
+                .andExpect(jsonPath("$.requestId", is(response.getRequestId()), Long.class));
     }
 
     @ParameterizedTest

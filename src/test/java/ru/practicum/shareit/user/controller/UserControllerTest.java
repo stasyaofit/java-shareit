@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
@@ -57,6 +58,11 @@ public class UserControllerTest {
 
         verify(userService, times(1)).createUser(any(UserDto.class));
         verifyNoMoreInteractions(userService);
+    }
+
+    @Test
+    void contextLoad() {
+        assertThat(userService).isNotNull();
     }
 
     @Test
