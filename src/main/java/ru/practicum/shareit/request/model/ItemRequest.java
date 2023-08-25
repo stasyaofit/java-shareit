@@ -34,7 +34,7 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id", nullable = false)
-    private Long id;
+    Long id;
 
     @NotEmpty(message = "Описание не может быть пустым")
     String description;

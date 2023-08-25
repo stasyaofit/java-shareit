@@ -54,6 +54,8 @@ class ItemRequestServiceImplTest {
     private final ItemRepository itemRepository;
     private User user1;
     private User user2;
+    private static final String ITEM_NAME = "item";
+    private static final String REQUEST_DESCRIPTION = "itemRequest";
     private static final Long VALUE_ID_1 = 1L;
     private final Long user1Id = VALUE_ID_1;
     private final Long user2Id = 2L;
@@ -113,15 +115,8 @@ class ItemRequestServiceImplTest {
         //when
         List<ItemRequestResponseDto> requests = requestService.getOwnRequests(user2Id);
         //then
-        assertThat(requests).isNotNull();
-        assertEquals(1, requests.size());
-        assertEquals(requestByUser2Id, requests.get(0).getId());
-        assertEquals(1, requests.get(0).getItems().get(0).getId());
-        assertEquals("item", requests.get(0).getItems().get(0).getName());
-        assertEquals("itemRequest", requests.get(0).getDescription());
-        assertEquals(currentTime, requests.get(0).getCreated());
+        checkItemRequestResponseDtoList(requests);
     }
-
 
     @Test
     @DisplayName("Получение списка запросов другого пользователя, если их нет, то возвращает пустой список")
@@ -134,13 +129,7 @@ class ItemRequestServiceImplTest {
         //when
         List<ItemRequestResponseDto> requests = requestService.getAllRequests(user1Id, 0, 20);
         //then
-        assertThat(requests).isNotNull();
-        assertEquals(1, requests.size());
-        assertEquals(requestByUser2Id, requests.get(0).getId());
-        assertEquals(1, requests.get(0).getItems().get(0).getId());
-        assertEquals("item", requests.get(0).getItems().get(0).getName());
-        assertEquals("itemRequest", requests.get(0).getDescription());
-        assertEquals(currentTime, requests.get(0).getCreated());
+        checkItemRequestResponseDtoList(requests);
     }
 
     @Test
@@ -157,8 +146,8 @@ class ItemRequestServiceImplTest {
         assertEquals(requestByUser2Id, responseDto.getId());
         assertEquals(1, responseDto.getItems().size());
         assertEquals(1, responseDto.getItems().get(0).getId());
-        assertEquals("item", responseDto.getItems().get(0).getName());
-        assertEquals("itemRequest", responseDto.getDescription());
+        assertEquals(ITEM_NAME, responseDto.getItems().get(0).getName());
+        assertEquals(REQUEST_DESCRIPTION, responseDto.getDescription());
         assertEquals(currentTime, responseDto.getCreated());
     }
 
@@ -195,6 +184,16 @@ class ItemRequestServiceImplTest {
         verify(userRepository, only()).findById(anyLong());
         verify(requestRepository, only()).findById(anyLong());
         verify(itemRepository, never()).findAllByRequest_IdIn(any());
+    }
+
+    private void checkItemRequestResponseDtoList(List<ItemRequestResponseDto> list) {
+        assertThat(list).isNotNull();
+        assertEquals(1, list.size());
+        assertEquals(requestByUser2Id, list.get(0).getId());
+        assertEquals(1, list.get(0).getItems().get(0).getId());
+        assertEquals(ITEM_NAME, list.get(0).getItems().get(0).getName());
+        assertEquals(REQUEST_DESCRIPTION, list.get(0).getDescription());
+        assertEquals(currentTime, list.get(0).getCreated());
     }
 
     private void setupUsersAndItemsAndDto() {
