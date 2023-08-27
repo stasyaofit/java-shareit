@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -29,6 +30,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @EqualsAndHashCode(exclude = {"id"})
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -56,7 +58,8 @@ public class Item {
     @JoinColumn(name = "owner_id")
     User owner;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "request_id")
     ItemRequest request;
 
     @Transient

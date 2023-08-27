@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingBookerDto;
 import ru.practicum.shareit.booking.mapper.BookingDtoMapper;
@@ -22,11 +23,16 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repositoty.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +43,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
     private final ItemDtoMapper itemMapper;
     private final BookingDtoMapper bookingMapper;
     private final CommentResponseDtoMapper commentMapper;
@@ -46,6 +53,17 @@ public class ItemServiceImpl implements ItemService {
         User user = checkUserExistAndGet(userId);
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
+        log.info("Вещь {} создана.", item);
+        return itemMapper.toItemDto(itemRepository.save(item));
+    }
+
+    @Override
+    public ItemDto saveItem(ItemDto itemDto, Long userId, Long requestId) {
+        User user = checkUserExistAndGet(userId);
+        ItemRequest request = checkRequestExistAndGet(requestId);
+        Item item = itemMapper.toItem(itemDto);
+        item.setOwner(user);
+        item.setRequest(request);
         log.info("Вещь {} создана.", item);
         return itemMapper.toItemDto(itemRepository.save(item));
     }
@@ -87,9 +105,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemBookingCommentDto> getOwnerItems(Long ownerId) {
+    public List<ItemBookingCommentDto> getOwnerItems(Long ownerId, Integer from, Integer size) {
         checkUserExistAndGet(ownerId);
-        List<Item> items = itemRepository.findItemByOwner_IdIs(ownerId);
+        List<Item> items = itemRepository.findItemByOwner_IdIs(ownerId,
+                PageRequest.of((int) from / size, size));
         List<ItemBookingCommentDto> itemsDto = items.stream()
                 .map(item -> {
                     ItemBookingCommentDto dto = itemMapper.toItemWithBookings(item, getItemLastBooking(item.getId()),
@@ -104,12 +123,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAvailableItemsByText(String text) {
+    public List<ItemDto> findAvailableItemsByText(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
         return itemMapper.toItemDtoList(
-                itemRepository.findItemByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text));
+                itemRepository.findItemByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text,
+                        PageRequest.of((int) from / size, size)));
     }
 
     @Override
@@ -131,6 +151,11 @@ public class ItemServiceImpl implements ItemService {
     private User checkUserExistAndGet(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("Пользователь с id = " + userId + " не найден."));
+    }
+
+    private ItemRequest checkRequestExistAndGet(Long requestId) {
+        return requestRepository.findById(requestId).orElseThrow(
+                () -> new UserNotFoundException("Запрос с id = " + requestId + " не найден."));
     }
 
     private BookingBookerDto getItemLastBooking(Long itemId) {

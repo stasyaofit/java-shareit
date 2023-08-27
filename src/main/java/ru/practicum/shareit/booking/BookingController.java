@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,8 @@ import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.UnsupportedStatusException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import static ru.practicum.shareit.util.Constants.REQUEST_HEADER;
@@ -27,6 +30,7 @@ import static ru.practicum.shareit.util.Constants.REQUEST_HEADER;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @Slf4j
+@Validated
 public class BookingController {
     private final BookingService bookingService;
 
@@ -68,23 +72,27 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> getUserBookings(
             @RequestHeader(REQUEST_HEADER) Long bookerId,
-            @RequestParam(required = false, defaultValue = "ALL") String state) {
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         BookingState bookingState = BookingState.toState(state).orElseThrow(
                 () -> new UnsupportedStatusException("Unknown state: " + state));
         log.info("Получен GET-запрос к эндпоинту: /bookings на получение информации о бронирование" +
                 " пользователя с id = {}", bookerId);
 
-        return bookingService.getUserBookings(bookerId, bookingState);
+        return bookingService.getUserBookings(bookerId, bookingState, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingResponseDto> getOwnerBookings(
             @RequestHeader(REQUEST_HEADER) Long ownerId,
-            @RequestParam(required = false, defaultValue = "ALL") String state) {
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         BookingState bookingState = BookingState.toState(state).orElseThrow(
                 () -> new UnsupportedStatusException("Unknown state: " + state));
         log.info("Получен GET-запрос к эндпоинту: /bookings/owner на получение информации о бронирование" +
                 " собственника с id = {}", ownerId);
-        return bookingService.getOwnerBookings(ownerId, bookingState);
+        return bookingService.getOwnerBookings(ownerId, bookingState, from, size);
     }
 }

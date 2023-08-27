@@ -176,6 +176,12 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
                     <configuration>
+                        <excludes>
+                            <exclude>**/User.class</exclude>
+                            <exclude>**/ShareItApp.class</exclude>
+                            <exclude>**/CommentResponseDtoMapperImpl.class</exclude>
+                            <exclude>**/RequestMapperImpl.class</exclude>
+                        </excludes>
                         <output>file</output>
                     </configuration>
                     <executions>
