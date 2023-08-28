@@ -182,9 +182,10 @@
                     <configuration>
                         <excludes>
                             <exclude>**/User.class</exclude>
-                            <exclude>**/ShareItApp.class</exclude>
                             <exclude>**/CommentResponseDtoMapperImpl.class</exclude>
                             <exclude>**/RequestMapperImpl.class</exclude>
+                            <exclude>**/Constants.class</exclude>
+                            <exclude>**/ShareItServer.class</exclude>
                         </excludes>
                         <output>file</output>
                     </configuration>

@@ -24,25 +24,11 @@ public class ErrorHandler {
                 new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler()
-    public ResponseEntity<ErrorResponse> handleAlreadyExistsMailException(final AlreadyExistsMailException e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
-    }
-
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleOperationAccessException(final OperationAccessException e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(
                 new ErrorResponse(HttpStatus.FORBIDDEN.value(), e.getMessage()), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleIncorrectParameterException(final IncorrectParameterException e) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                "Ошибка с полем " + e.getParameter()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
