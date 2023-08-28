@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
         checkUserExistAndGet(bookerId);
         LocalDateTime now = LocalDateTime.now();
         Pageable page = PageRequest.of((int) from / size, size);
-        Pageable sortPage = PageRequest.of((int) from / size, size, Sort.by(Sort.Direction.ASC, "start"));
+        Pageable sortPage = PageRequest.of((int) from / size, size, Sort.by(Sort.Direction.ASC, "id"));
         List<Booking> userBookings;
         switch (state) {
             case ALL:
