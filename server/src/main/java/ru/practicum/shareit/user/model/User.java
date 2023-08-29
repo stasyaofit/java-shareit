@@ -36,5 +36,4 @@ public class User {
     String name;
     @Column(unique = true, nullable = false)
     String email;
-
 }

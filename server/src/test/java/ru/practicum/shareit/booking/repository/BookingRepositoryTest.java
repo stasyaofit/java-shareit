@@ -83,7 +83,6 @@ class BookingRepositoryTest {
     void tearDown() {
         userRepository.deleteAll();
         itemRepository.deleteAll();
-        bookingRepository.deleteAll();
     }
 
     @Test

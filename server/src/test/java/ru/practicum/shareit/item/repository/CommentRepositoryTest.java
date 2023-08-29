@@ -56,8 +56,8 @@ class CommentRepositoryTest {
         item = Item.builder()
                 .name("Item")
                 .description("description")
-                .owner(owner)
                 .available(true)
+                .owner(owner)
                 .request(null)
                 .build();
 
@@ -77,7 +77,6 @@ class CommentRepositoryTest {
     void tearDown() {
         userRepository.deleteAll();
         itemRepository.deleteAll();
-        commentRepository.deleteAll();
     }
 
     @Test
