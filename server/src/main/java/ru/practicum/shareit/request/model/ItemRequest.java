@@ -18,7 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,13 +34,11 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id", nullable = false)
     Long id;
-
-    @NotEmpty(message = "Описание не может быть пустым")
+    @Column(nullable = false)
     String description;
-
     @ManyToOne
     @JoinColumn(name = "requester_id")
     User requester;
-
+    @Column(nullable = false)
     LocalDateTime created;
 }

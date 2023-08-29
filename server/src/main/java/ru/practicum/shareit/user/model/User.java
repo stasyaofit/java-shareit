@@ -16,8 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -34,13 +32,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     Long id;
-
-    @NotBlank(message = "Имя не может быть пустым")
+    @Column(nullable = false)
     String name;
-
-    @Email(message = "Это не почта")
-    @NotBlank(message = "Почта не может быть пустой")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     String email;
 
 }

@@ -22,7 +22,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -40,10 +39,8 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
     Long id;
-    @NotNull
     @Column(name = "start_date", nullable = false)
     LocalDateTime start;
-    @NotNull
     @Column(name = "end_date", nullable = false)
     LocalDateTime end;
 
